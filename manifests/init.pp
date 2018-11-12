@@ -488,19 +488,19 @@ class datadog_agent(
       'enabled' => bool2str($process_agent_enabled),
     }
     $agent_config = {
-      'api_key' => $api_key,
-      'dd_url' => $dd_url,
-      'hostname' => $hostname,
-      'tags' => $tags,
-      'cmd_port' => 5001,
-      'conf_path' => $datadog_agent::params::conf6_dir,
-      'enable_metadata_collection' => $collect_instance_metadata,
-      'dogstatsd_port' => $dogstatsd_port,
-      'dogstatsd_socket' => $dogstatsd_socket,
+      'api_key'                     => $api_key,
+      'dd_url'                      => $dd_url,
+      'hostname'                    => $hostname,
+      'tags'                        => $local_tags,
+      'cmd_port'                    => 5001,
+      'conf_path'                   => $datadog_agent::params::conf6_dir,
+      'enable_metadata_collection'  => $collect_instance_metadata,
+      'dogstatsd_port'              => $dogstatsd_port,
+      'dogstatsd_socket'            => $dogstatsd_socket,
       'dogstatsd_non_local_traffic' => $non_local_traffic,
-      'log_file' => $agent6_log_file,
-      'log_level' => $log_level,
-      'process_config' => $agent_process_config,
+      'log_file'                    => $agent6_log_file,
+      'log_level'                   => $log_level,
+      'process_config'              => $agent_process_config,
     }
 
     file { '/etc/datadog-agent/datadog.yaml':
