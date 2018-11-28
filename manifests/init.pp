@@ -6,6 +6,9 @@
 #   $dd_url:
 #       The host of the Datadog intake server to send agent data to.
 #       Defaults to https://app.datadoghq.com.
+#   $site:
+#       The host of the Datadog intake server to send agent data to.
+#       New with 6.6.0. Defaults to datadoghq.com.
 #   $hostname:
 #       Optional name to be reported by the agent.
 #       Defaults to the actual hostname/puppet certname.
@@ -189,6 +192,7 @@
 #
 class datadog_agent(
   $dd_url = 'https://app.datadoghq.com',
+  $site = 'datadoghq.com',
   $hostname = '',
   $api_key = 'your_API_key',
   $collect_ec2_tags = false,
@@ -279,6 +283,7 @@ class datadog_agent(
   # lint:endignore
 
   validate_string($dd_url)
+  validate_string($site)
   validate_string($hostname)
   validate_string($api_key)
   validate_array($tags)
@@ -490,6 +495,7 @@ class datadog_agent(
     $agent_config = {
       'api_key'                     => $api_key,
       'dd_url'                      => $dd_url,
+      'site'                        => $site,
       'hostname'                    => $hostname,
       'tags'                        => $local_tags,
       'cmd_port'                    => 5001,
