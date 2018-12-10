@@ -6,9 +6,10 @@
 #   $dd_url:
 #       The host of the Datadog intake server to send agent data to.
 #       Defaults to https://app.datadoghq.com.
-#   $site:
-#       The host of the Datadog intake server to send agent data to.
-#       New with 6.6.0. Defaults to datadoghq.com.
+#   $datadog_site:
+#       The site of the Datadog intake to send Agent data to. Defaults to 'datadoghq.com',
+#       set to 'datadoghq.eu' to send data to the EU site.
+#       This option is only available with agent version >= 6.6.0.
 #   $hostname:
 #       Optional name to be reported by the agent.
 #       Defaults to the actual hostname/puppet certname.
@@ -192,7 +193,7 @@
 #
 class datadog_agent(
   $dd_url = 'https://app.datadoghq.com',
-  $site = 'datadoghq.com',
+  $datadog_site = 'datadoghq.com',
   $hostname = '',
   $api_key = 'your_API_key',
   $collect_ec2_tags = false,
@@ -283,7 +284,7 @@ class datadog_agent(
   # lint:endignore
 
   validate_string($dd_url)
-  validate_string($site)
+  validate_string($datadog_site)
   validate_string($hostname)
   validate_string($api_key)
   validate_array($tags)
@@ -495,7 +496,7 @@ class datadog_agent(
     $agent_config = {
       'api_key'                     => $api_key,
       'dd_url'                      => $dd_url,
-      'site'                        => $site,
+      'site'                        => $datadog_site,
       'hostname'                    => $hostname,
       'tags'                        => $local_tags,
       'cmd_port'                    => 5001,
@@ -522,6 +523,7 @@ class datadog_agent(
   if $puppet_run_reports {
     class { 'datadog_agent::reports':
       api_key                   => $api_key,
+      datadog_site              => $datadog_site,
       puppet_gem_provider       => $puppet_gem_provider,
       puppetmaster_user         => $puppetmaster_user,
       dogapi_version            => $datadog_agent::params::dogapi_version,
