@@ -270,6 +270,7 @@ class datadog_agent(
   $apm_enabled = false,
   $apm_env = '',
   $process_agent_enabled = false,
+  $agent6_extra_options = {},
 ) inherits datadog_agent::params {
 
   # Allow ports to be passed as integers or strings.
@@ -347,6 +348,7 @@ class datadog_agent(
   validate_bool($agent6_enable)
   validate_string($apm_env)
   validate_bool($process_agent_enabled)
+  validate_hash($agent6_extra_options)
 
   if $hiera_integrations {
     $local_integrations = hiera_hash('datadog_agent::integrations', {})
@@ -493,7 +495,7 @@ class datadog_agent(
     $agent_process_config = {
       'enabled' => bool2str($process_agent_enabled),
     }
-    $agent_config = {
+    $base_agent_config = {
       'api_key'                     => $api_key,
       'dd_url'                      => $dd_url,
       'site'                        => $datadog_site,
@@ -509,6 +511,7 @@ class datadog_agent(
       'log_level'                   => $log_level,
       'process_config'              => $agent_process_config,
     }
+    $agent_config = deep_merge($base_agent_config, $agent6_extra_options)
 
     file { '/etc/datadog-agent/datadog.yaml':
       owner   => 'dd-agent',
