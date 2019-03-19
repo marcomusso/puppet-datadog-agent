@@ -41,19 +41,15 @@
 #
 #
 class datadog_agent::integrations::process(
-  $hiera_processes = false,
+  $hiera_processes = [],
   $processes = [],
   ) inherits datadog_agent::params {
   include datadog_agent
 
-  validate_bool( $hiera_processes )
+  validate_array( $hiera_processes )
   validate_array( $processes )
 
-  if $hiera_processes {
-    $local_processes = hiera_array('datadog_agent::integrations::process::processes')
-  } else {
-    $local_processes = $processes
-  }
+  $local_processes = $processes + $hiera_processes
 
   if $::datadog_agent::agent6_enable {
     $dst = "${datadog_agent::conf6_dir}/process.yaml"
