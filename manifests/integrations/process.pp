@@ -41,19 +41,15 @@
 #
 #
 class datadog_agent::integrations::process(
-  Boolean $hiera_processes = false,
+  Array $hiera_processes = [],
   Array $processes = [],
   ) inherits datadog_agent::params {
   include datadog_agent
 
-  validate_legacy('Boolean', 'validate_bool', $hiera_processes)
+  validate_legacy('Array', 'validate_array', $hiera_processes)
   validate_legacy('Array', 'validate_array', $processes)
 
-  if $hiera_processes {
-    $local_processes = lookup({ 'name' => 'datadog_agent::integrations::process::processes', 'merge' => 'unique', 'default_value' => $processes })
-  } else {
-    $local_processes = $processes
-  }
+  $local_processes = $processes + $hiera_processes
 
   $legacy_dst = "${datadog_agent::conf_dir}/process.yaml"
   if !$::datadog_agent::agent5_enable {
